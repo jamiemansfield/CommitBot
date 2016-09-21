@@ -11,7 +11,7 @@ import (
 )
 
 func GetGitlab(ctx *macaron.Context) {
-    if (ctx.Req.Header.Get("X-Gitlab-Event") == "push") {
+    if (ctx.Req.Header.Get("X-Gitlab-Event") == "Push Hook") {
         body, _ := ioutil.ReadAll(ctx.Req.Body().ReadCloser())
 
         var res github.PushEvent
