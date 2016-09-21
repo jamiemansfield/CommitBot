@@ -18,10 +18,9 @@ func GetGitlab(ctx *macaron.Context) {
         json.Unmarshal(body, &res)
 
         branch := utils.GetBranchName(*res.Ref)
-        compare := *res.Compare
 
         modules.BOT.Privmsg("#" + modules.CONFIG.Section("IRC").Key("channel").String(),
-            "[" + *res.Repo.Name + "] " + *res.Pusher.Name + " pushed " + strconv.Itoa(len(res.Commits)) + " commits to " + branch + " " + compare)
+            "[" + *res.Repo.Name + "] " + *res.Pusher.Name + " pushed " + strconv.Itoa(len(res.Commits)) + " commits to " + branch)
 
         for _, commit := range res.Commits {
             message := utils.GetShortCommitMessage(*commit.Message)
