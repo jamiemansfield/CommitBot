@@ -20,14 +20,14 @@ func GetGithub(ctx *macaron.Context) {
         branch := utils.GetBranchName(*res.Ref)
         compare := utils.GetGitioUrl(*res.Compare)
 
-        modules.BOT.Privmsg(modules.CONFIG.Section("IRC").Key("channel").String(),
+        modules.BOT.Privmsg("#" + modules.CONFIG.Section("IRC").Key("channel").String(),
             "[" + *res.Repo.Name + "] " + *res.Pusher.Name + " pushed " + strconv.Itoa(len(res.Commits)) + " commits to " + branch + " " + compare)
 
         for _, commit := range res.Commits {
             message := utils.GetShortCommitMessage(*commit.Message)
             id := utils.GetShortCommitID(*commit.ID)
 
-            modules.BOT.Privmsg(modules.CONFIG.Section("DISCORD").Key("channel").String(),
+            modules.BOT.Privmsg("#" + modules.CONFIG.Section("DISCORD").Key("channel").String(),
                 *res.Repo.Name + "/" + branch + " " + id + ": " + message + " (By " + *commit.Author.Name + ")")
         }
     }
