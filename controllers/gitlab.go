@@ -14,20 +14,41 @@ func GetGitlab(ctx *macaron.Context) {
     if (ctx.Req.Header.Get("X-Gitlab-Event") == "Push Hook") {
         body, _ := ioutil.ReadAll(ctx.Req.Body().ReadCloser())
 
-        var res github.PushEvent
+        var res PushEvent
         json.Unmarshal(body, &res)
 
         branch := utils.GetBranchName(*res.Ref)
 
         modules.BOT.Privmsg("#" + modules.CONFIG.Section("IRC").Key("channel").String(),
-            "[" + *res.Repo.Name + "] " + *res.Pusher.Name + " pushed " + strconv.Itoa(len(res.Commits)) + " commits to " + branch)
+            "[" + *res.Project.Name + "] " + *res.UserName + " pushed " + strconv.Itoa(len(res.Commits)) + " commits to " + branch)
 
         for _, commit := range res.Commits {
             message := utils.GetShortCommitMessage(*commit.Message)
             id := utils.GetShortCommitID(*commit.ID)
 
             modules.BOT.Privmsg("#" + modules.CONFIG.Section("DISCORD").Key("channel").String(),
-                *res.Repo.Name + "/" + branch + " " + id + ": " + message + " (By " + *commit.Author.Name + ")")
+                *res.Project.Name + "/" + branch + " " + id + ": " + message + " (By " + *commit.Author.Name + ")")
         }
     }
+}
+
+type PushEvent struct {
+    UserName *string `json:"user_name"`
+    Ref *string `json:"ref"`
+    Commits []Commit `json:"commits"`
+    Project Project `json:"project"`
+}
+
+type Project struct {
+    Name *string `json:"name"`
+}
+
+type Commit struct {
+    ID *string `json:"id"`
+    Message *string `json:"message"`
+    Author CommitAuthor `json:"author"`
+}
+
+type CommitAuthor struct {
+    Name *string `json:"name"`
 }
