@@ -17,7 +17,8 @@ func main() {
     modules.InitBot()
 
     // Routes
-    s.Post("/commit", controllers.GetGithub)
+    s.Post("/webhook/github/", controllers.GetGithub)
+    s.Post("/webhook/gitlab/", controllers.GetGitlab)
 
     // Tell client to connect.
     if err := modules.BOT.Connect(); err != nil {
@@ -28,7 +29,8 @@ func main() {
     modules.BOT.HandleFunc(client.CONNECTED,
         func(conn *client.Conn, line *client.Line) {
             conn.Join("#" + modules.CONFIG.Section("IRC").Key("channel").String())
-        })
+        },
+    )
 
     // Run webserver
     s.Run()
