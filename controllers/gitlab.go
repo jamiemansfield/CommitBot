@@ -4,7 +4,6 @@ import (
     "strconv"
     "io/ioutil"
     "encoding/json"
-    "github.com/google/go-github/github"
     "github.com/jamierocks/CommitBot/utils"
     "github.com/jamierocks/CommitBot/modules"
     "gopkg.in/macaron.v1"
