@@ -27,7 +27,7 @@ func GetGithub(ctx *macaron.Context) {
             message := utils.GetShortCommitMessage(*commit.Message)
             id := utils.GetShortCommitID(*commit.ID)
 
-            modules.BOT.Privmsg("#" + modules.CONFIG.Section("DISCORD").Key("channel").String(),
+            modules.BOT.Privmsg("#" + modules.CONFIG.Section("IRC").Key("channel").String(),
                 *res.Repo.Name + "/" + branch + " " + id + ": " + message + " (By " + *commit.Author.Name + ")")
         }
     }
