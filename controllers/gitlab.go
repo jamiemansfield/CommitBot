@@ -19,14 +19,14 @@ func GetGitlab(ctx *macaron.Context) {
         branch := utils.GetBranchName(*res.Ref)
 
         modules.BOT.Privmsg("#" + modules.CONFIG.Section("IRC").Key("channel").String(),
-            "[" + *res.Project.Name + "] " + *res.UserName + " pushed " + strconv.Itoa(len(res.Commits)) + " commits to " + branch)
+            "[" + *res.Repository.Name + "] " + *res.UserName + " pushed " + strconv.Itoa(len(res.Commits)) + " commits to " + branch)
 
         for _, commit := range res.Commits {
             message := utils.GetShortCommitMessage(*commit.Message)
             id := utils.GetShortCommitID(*commit.ID)
 
             modules.BOT.Privmsg("#" + modules.CONFIG.Section("DISCORD").Key("channel").String(),
-                *res.Project.Name + "/" + branch + " " + id + ": " + message + " (By " + *commit.Author.Name + ")")
+                *res.Repository.Name + "/" + branch + " " + id + ": " + message + " (By " + *commit.Author.Name + ")")
         }
     }
 }
@@ -35,10 +35,10 @@ type PushEvent struct {
     UserName *string `json:"user_name"`
     Ref *string `json:"ref"`
     Commits []Commit `json:"commits"`
-    Project Project `json:"project"`
+    Repository Repository `json:"repository"`
 }
 
-type Project struct {
+type Repository struct {
     Name *string `json:"name"`
 }
 
